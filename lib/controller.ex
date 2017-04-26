@@ -34,6 +34,8 @@ defmodule ConnectFour.Controller do
       {:winner, highlight_coords} ->
         Board.print_winning_board(new_board, highlight_coords)
         Board.print_winner(opponents[which].call(:name), which)
+      :tie ->
+        Board.print_tie(opp1.call(:name), opp2.call(:name))
       _ ->
         loop(new_board, opponents, rem(which + 1, 2))
     end
