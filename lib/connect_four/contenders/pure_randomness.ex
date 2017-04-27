@@ -5,14 +5,6 @@ defmodule ConnectFour.Contenders.PureRandomness do
     GenServer.start_link(__MODULE__, default)
   end
 
-  def name(pid) do
-    GenServer.call(pid, :name)
-  end
-
-  def move(pid, board) do
-    GenServer.call(pid, {:move, board})
-  end
-
   def handle_call(:name, _from, state) do
     letters = for n <- ?A..?Z, do: n
     random_name =
