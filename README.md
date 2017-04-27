@@ -16,7 +16,7 @@ will receive a prize of some sort (for those at the meetup for which this was pr
 * try it out (might improve interface at some point)
   * you must run this in bash shell within no muxer for the colors to work properly
 
-`> mix run -e 'ConnectFour.Controller.start_game(ConnectFour.Contenders.PureRandomness, ConnectFour.Contenders.PureRandomness)`
+`> mix run -e 'ConnectFour.Controller.start_game(ConnectFour.Contenders.PureRandomness, ConnectFour.Contenders.PureRandomness)'`
 
 * create a contender (`<project_root>/lib/connect_four/contenders`)
   * take a look at `PureRandomness` for some ideas
@@ -33,6 +33,7 @@ will receive a prize of some sort (for those at the meetup for which this was pr
   * test it against `PureRandomness`.  if you can't beat it 100% of the time...
   * your `GenServer` should respond to all calls within 5 seconds.  If not, you forfeit.
   * if your `GenServer` dies, tough luck.  There are no `Supervisor`s to keep you alive.
+  * if you make a disallowed move (a column that is already full), you also forfeit.
 
 * create a pull request
 

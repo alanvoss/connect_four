@@ -152,12 +152,14 @@ defmodule ConnectFour.BoardHelper do
 
   def drop(board, contender, column_index) do
     if Enum.at(board, 0) |> Enum.at(column_index) !== 0 do
-      raise "That move is not allowed"
+      {:error, "non-allowed move"}
+    else
+      {:ok,
+        board
+        |> Enum.reverse
+        |> drop(contender, column_index, false, [])
+      }
     end
-
-    board
-    |> Enum.reverse
-    |> drop(contender, column_index, false, [])
   end
 
   defp drop([], _, _, _, board), do: board

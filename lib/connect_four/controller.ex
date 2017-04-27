@@ -46,18 +46,21 @@ defmodule ConnectFour.Controller do
           2 -> BoardHelper.flip(board)
         end
       })
-    catch
+    catch 
       :exit, _ ->
-        Board.print_forfeit(contender)
-        :timer.sleep(5000)
-        winner = rem(contender, 2) + 1
-        Board.print_winner(player(winner), winner)
-        System.halt(0)
+        forfeit(contender, "Timeout or other Genserver error")
     end
+
+    new_board =
+      case BoardHelper.drop(board, contender, column) do
+        {:error, error} ->
+          forfeit(contender, error)
+        {:ok, error_free_board} ->
+          error_free_board
+      end
 
     Board.print_drop(board, contender, column)
     :timer.sleep(100)
-    new_board = BoardHelper.drop(board, contender, column)
     Board.print(new_board)
     :timer.sleep(100)
 
@@ -78,5 +81,13 @@ defmodule ConnectFour.Controller do
       _ ->
         loop(new_board, contenders, rem(contender, 2) + 1)
     end
+  end
+
+  defp forfeit(contender, reason) do
+    Board.print_forfeit(contender, reason)
+    :timer.sleep(5000)
+    winner = rem(contender, 2) + 1
+    Board.print_winner(player(winner), winner)
+    System.halt(0)
   end
 end

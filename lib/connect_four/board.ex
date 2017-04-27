@@ -53,11 +53,11 @@ defmodule ConnectFour.Board do
     IO.puts [IO.ANSI.reset]
   end
 
-  def print_forfeit(contender) do
+  def print_forfeit(contender, reason) do
     IO.puts [IO.ANSI.clear]
     IO.puts []
     IO.puts []
-    IO.puts [IO.ANSI.green, "Due to timeout or server crash"]
+    IO.puts [IO.ANSI.green, "Due to #{reason}"]
     IO.puts [IO.ANSI.green, "Player ", @contender_colors[contender], "#{contender}", IO.ANSI.green, " has forfeited"]
     IO.puts []
     IO.puts []

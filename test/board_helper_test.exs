@@ -31,19 +31,18 @@ defmodule BoardHelperTest do
 
   describe "drop" do
     test "valid drop" do
-      assert BoardHelper.drop(@board, 1, 2) == [
+      assert BoardHelper.drop(@board, 1, 2) == {:ok, [
         [0, 1, 0, 0, 1, 2, 1],
         [1, 2, 0, 0, 2, 1, 2],
         [2, 1, 1, 2, 1, 2, 2],
         [2, 1, 2, 2, 1, 2, 1],
         [1, 2, 1, 1, 2, 2, 1],
         [1, 1, 2, 2, 1, 1, 1]
-      ]
+      ]}
     end
 
     test "invalid drop" do
-      assert_raise(RuntimeError,
-        fn -> BoardHelper.drop(@board, 2, 1) end)
+      assert BoardHelper.drop(@board, 2, 1) == {:error, "non-allowed move"}
     end
   end
 
