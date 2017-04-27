@@ -29,13 +29,13 @@ defmodule ConnectFour.Board do
     2 => [@highlighter_color, " \xF0\x9F\x85\xB1 "]
   }
 
-  def print_winner(name, which) do
+  def print_winner(name, contender) do
     IO.puts [IO.ANSI.clear]
     IO.puts []
     IO.puts []
     IO.puts [IO.ANSI.red, "And the winner is ..."]
     IO.puts []
-    IO.puts [@contender_colors[which], name]
+    IO.puts [@contender_colors[contender], name]
     IO.puts []
   end
 

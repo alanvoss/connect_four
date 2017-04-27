@@ -1,43 +1,56 @@
 defmodule ConnectFour.Controller do
-  alias ConnectFour.Board
+  alias ConnectFour.{Board, BoardHelper}
 
   def start_game(opponent1, opponent2) do
-    opp1 = Enum.random([opponent1, opponent2])
-    opp2 = Enum.filter([opponent1, opponent2], fn x -> x !== opp1 end)
+    contenders = [opponent1, opponent2]
+    opp1 = Enum.random(contenders)
+    [opp2] = List.delete(contenders, opp1)
+
+    {:ok, opp1_pid} = opp1.start_link(nil)
+    {:ok, opp2_pid} = opp2.start_link(nil)
 
     # announcement
-    Board.print_contenders(opp1.call(:name), opp2.call(:name))
+    Board.print_contenders(opp1.name(opp1_pid), opp2.name(opp2_pid))
+    :timer.sleep(2000)
 
-    new_board = Board.new()
-    loop(new_board, [opp1, opp2], 0)
+    new_board = BoardHelper.new()
+    loop(new_board, [opp1_pid, opp2_pid], 1)
   end
 
-  defp loop(board, opponents = [opp1, opp2], which) do
+  defp loop(board, contenders = [opp1_pid, opp2_pid], contender) do
     Board.print(board)
-    :timer.sleep(500)
 
-    {:ok, column} = opponents[which].call({
+    contender_pid = Enum.at(contenders, contender - 1)
+    column = GenServer.call(contender_pid, {
       :move,
-      case which do
-        0 -> board
-        1 -> Board.flip(board)
+      case contender do
+        1 -> board
+        2 -> BoardHelper.flip(board)
       end
     })
 
-    Board.print_drop(board, which, column)
-    :timer.sleep(500)
-    new_board = Board.drop(board, which, column)
+    Board.print_drop(board, contender, column)
+    :timer.sleep(100)
+    new_board = BoardHelper.drop(board, contender, column)
     Board.print(new_board)
-    :timer.sleep(500)
+    :timer.sleep(100)
 
-    case Board.evaluate_board(new_board) do
+    case BoardHelper.evaluate_board(new_board) do
       {:winner, highlight_coords} ->
-        Board.print_winning_board(new_board, highlight_coords)
-        Board.print_winner(opponents[which].call(:name), which)
+        for i <- 1..5 do
+          :timer.sleep(100)
+          Board.print(new_board, true, highlight_coords)
+          :timer.sleep(100)
+          Board.print(new_board)
+        end
+        :timer.sleep(2000)
+        Board.print_winner(GenServer.call(contender_pid, :name), contender)
+        IO.puts [IO.ANSI.reset()]
       :tie ->
-        Board.print_tie(opp1.call(:name), opp2.call(:name))
+        Board.print_tie(GenServer.call(opp1_pid, :name), GenServer.call(opp2_pid, :name))
+        IO.puts [IO.ANSI.reset()]
       _ ->
-        loop(new_board, opponents, rem(which + 1, 2))
+        loop(new_board, contenders, rem(contender, 2) + 1)
     end
   end
 end
