@@ -23,15 +23,20 @@ will receive a prize of some sort (for those at the meetup for which this was pr
   * it needs to be a `GenServer` that responds to:
     * `:name:` (your team name)
     * `{:move, board}` `call`s (the column from 0-6 that you would like to put your piece into
-  * utilize the BoardHelper for several helper functions that should simplify some common tasks
+  * utilize the `BoardHelper` for several helper functions that should simplify some common tasks
     * board evaluation
     * board creation
+    * "what would the board look like if I dropped my piece in this column?"
+    * etc.
   * your `GenServer` can choose to store `state` if if wishes, but the full board will be passed each time.
     * `0` is an empty, eligible space / column
     * `1` is where you've moved previously
     * `2` is where your opponent has moved
   * test it against `PureRandomness`.  if you can't beat it 100% of the time...
   * your `GenServer` should respond to all calls within 5 seconds.  If not, you forfeit.
+    * you are allowed to do as much background processessing as you want between calls.
+    * you are allowed to spin up other processes.
+    * the lifecyle of your bot will be around 10 seconds.
   * if your `GenServer` dies, tough luck.  There are no `Supervisor`s to keep you alive.
   * if you make a disallowed move (a column that is already full), you also forfeit.
 
