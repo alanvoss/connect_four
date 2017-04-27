@@ -37,6 +37,7 @@ defmodule ConnectFour.Board do
     IO.puts []
     IO.puts [@contender_colors[contender], name]
     IO.puts []
+    IO.puts [IO.ANSI.reset]
   end
 
   def print_contenders(contender1, contender2) do
@@ -46,6 +47,28 @@ defmodule ConnectFour.Board do
     IO.puts [IO.ANSI.yellow, "    vs    "]
     IO.puts []
     IO.puts [@contender_colors[2], contender2]
+    IO.puts []
+    IO.puts [IO.ANSI.reset]
+  end
+
+  def print_tie(contender1, contender2) do
+    IO.puts [IO.ANSI.clear]
+    IO.puts []
+    IO.puts [IO.ANSI.clear, "It's a tie!!!!"]
+    IO.puts []
+    IO.puts [@contender_colors[1], contender1]
+    IO.puts [@contender_colors[2], contender2]
+    IO.puts []
+    IO.puts [IO.ANSI.reset]
+  end
+
+  def print_forfeit(contender) do
+    IO.puts [IO.ANSI.clear]
+    IO.puts []
+    IO.puts []
+    IO.puts [IO.ANSI.green, "Due to timeout or server crash"]
+    IO.puts [IO.ANSI.green, "Player ", @contender_colors[contender], "#{contender}", IO.ANSI.green, " has forfeited"]
+    IO.puts []
     IO.puts []
     IO.puts [IO.ANSI.reset]
   end
