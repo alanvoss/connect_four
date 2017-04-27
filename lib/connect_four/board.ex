@@ -44,7 +44,7 @@ defmodule ConnectFour.Board do
     IO.puts [IO.ANSI.clear]
     IO.puts [@contender_colors[1], contender1]
     IO.puts []
-    IO.puts [IO.ANSI.yellow, "    vs    "]
+    IO.puts [IO.ANSI.yellow, "     vs     "]
     IO.puts []
     IO.puts [@contender_colors[2], contender2]
     IO.puts []
