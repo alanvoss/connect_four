@@ -4,7 +4,7 @@ defmodule ConnectFour.Board do
     [1, 2, 0, 0, 2, 1, 2],
     [2, 1, 0, 2, 1, 2, 2],
     [2, 1, 2, 2, 1, 2, 1],
-    [1, 2, 0, 1, 2, 2, 1],
+    [1, 2, 1, 1, 2, 2, 1],
     [1, 1, 2, 2, 1, 1, 1],
   ]
 
@@ -16,7 +16,7 @@ defmodule ConnectFour.Board do
   @contender_characters %{
     0 => ["   "],
     1 => [@contender_colors[1], " \xF0\x9F\x85\xB0 "],
-    2 => [@contender_colors[2],  " \xF0\x9F\x85\xB1 "]
+    2 => [@contender_colors[2], " \xF0\x9F\x85\xB1 "]
   }
 
   def new do
@@ -45,7 +45,7 @@ x =    evaluate_rows(board) ||
       evaluate_diagonals(board)
       evaluate_tie(board)
 require IEx
-IEx.pry
+#IEx.pry
 x
   end
 
@@ -99,7 +99,7 @@ x
       end
 
 require IEx
-IEx.pry
+#IEx.pry
 "alan"
   end
 
