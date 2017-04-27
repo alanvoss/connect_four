@@ -65,13 +65,13 @@ defmodule BoardHelperTest do
     ]
   end
 
-  describe "at_coordinate" do
+  test "at_coordinate" do
     assert BoardHelper.at_coordinate(@board, {3,5}) == 2
     assert BoardHelper.at_coordinate(@board, {1,3}) == 1
     assert BoardHelper.at_coordinate(@board, {0,0}) == 0
   end
 
-  describe "is_valid_coordinate?" do
+  test "is_valid_coordinate?" do
     assert BoardHelper.is_valid_coordinate?({3, 5})  == true
     assert BoardHelper.is_valid_coordinate?({1, 3})  == true
     assert BoardHelper.is_valid_coordinate?({0, 0})  == true
