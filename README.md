@@ -14,6 +14,7 @@ You have 1 hour to create the best bot that you can to play Connect Four.  The w
 will receive a prize of some sort (for those at the meetup for which this was programmed).
 
 * try it out (might improve interface at some point)
+  * you must run this in bash shell within no muxer for the colors to work properly
 
 `> mix run -e 'ConnectFour.Controller.start_game(ConnectFour.Contenders.PureRandomness, ConnectFour.Contenders.PureRandomness)`
 
@@ -31,6 +32,7 @@ will receive a prize of some sort (for those at the meetup for which this was pr
     * `2` is where your opponent has moved
   * test it against `PureRandomness`.  if you can't beat it 100% of the time...
   * your `GenServer` should respond to all calls within 5 seconds.  If not, you forfeit.
+  * if your `GenServer` dies, tough luck.  There are no `Supervisor`s to keep you alive.
 
 * create a pull request
 
