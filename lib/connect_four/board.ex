@@ -33,7 +33,7 @@ defmodule ConnectFour.Board do
     IO.puts [IO.ANSI.clear]
     IO.puts []
     IO.puts []
-    IO.puts [IO.ANSI.red, "And the winner is ..."]
+    IO.puts [IO.ANSI.green, "And the winner is ..."]
     IO.puts []
     IO.puts [@contender_colors[contender], name]
     IO.puts []
