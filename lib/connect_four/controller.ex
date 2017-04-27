@@ -10,7 +10,7 @@ defmodule ConnectFour.Controller do
     {:ok, opp2_pid} = opp2.start_link(nil)
 
     # announcement
-    Board.print_contenders(opp1.name(opp1_pid), opp2.name(opp2_pid))
+    Board.print_contenders(GenServer.call(opp1_pid, :name), GenServer.call(opp2_pid, :name))
     :timer.sleep(2000)
 
     new_board = BoardHelper.new()
