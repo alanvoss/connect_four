@@ -95,5 +95,6 @@ defmodule ConnectFour.Board do
         end
       end)
     end)
+    IO.puts [IO.ANSI.reset]
   end
 end
