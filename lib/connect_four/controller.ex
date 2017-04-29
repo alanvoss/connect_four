@@ -12,6 +12,12 @@ defmodule ConnectFour.Controller do
       |> Enum.filter(&(String.starts_with?(Atom.to_string(&1), "Elixir.ConnectFour.Contenders")))
       |> combinations(2)
 
+    if length(combos) == 0 do
+      IO.puts "There are 1 or fewer contenders currently, so there's no battles to be done."
+      IO.puts "Try using #{__MODULE__}.start_game(...) instead"
+      System.halt(0)
+    end
+
     sorted_winners =
       combos
       |> Enum.map(&start_game(&1))
