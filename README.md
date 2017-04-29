@@ -16,20 +16,17 @@ will receive a prize of some sort (for those at the meetup for which this was pr
 * try it out (might improve interface at some point)
   * you must run this in bash shell within no muxer for the colors to work properly
 
-`> mix run -e 'ConnectFour.Controller.start_game([ConnectFour.Contenders.PureRandomness, ConnectFour.Contenders.PureRandomness])'`
-
-* to pit all contenders against each other
-
-`> mix run -e 'ConnectFour.Controller.start_battle'`
+    `> mix run -e 'ConnectFour.Controller.start_game([ConnectFour.Contenders.PureRandomness, ConnectFour.Contenders.PureRandomness])'`
 
 * create a contender (`<project_root>/lib/connect_four/contenders`)
   * take a look at `PureRandomness` for some ideas
   * it needs to be a `GenServer` that responds to:
-    * `:name:` (your team name)
-    * `{:move, board}` `call`s (the column from 0-6 that you would like to put your piece into
+    * `:name:` (return your team name)
+    * `{:move, board}` `call`s (return the column from 0-6 that you would like to put your piece into)
   * utilize the `BoardHelper` for several helper functions that should simplify some common tasks
     * board evaluation
     * board creation
+    * piece at given coordinate
     * "what would the board look like if I dropped my piece in this column?"
     * etc.
   * your `GenServer` can choose to store `state` if if wishes, but the full board will be passed each time.
@@ -41,9 +38,14 @@ will receive a prize of some sort (for those at the meetup for which this was pr
     * you are allowed to do as much background processessing as you want between calls.
     * you are allowed to spin up other processes.
     * the lifecyle of your bot will be around 10 seconds.
-  * if your `GenServer` dies, tough luck.  There are no `Supervisor`s to keep you alive.
+      * no supervisor will keep it alive (if your `GenServer` dies, tough luck)
+      * it will be started each time a match with your (new) opponent begins
   * if you make a disallowed move (a column that is already full), you also forfeit.
 
 * create a pull request
 
 * we'll run a tournament with all the contenders to find the ultimate winner
+  * to pit all contenders against each other
+
+    `> mix run -e 'ConnectFour.Controller.start_battle'`
+
