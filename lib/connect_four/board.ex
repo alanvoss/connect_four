@@ -20,6 +20,32 @@ defmodule ConnectFour.Board do
     2 => [@highlighter_color, " \xF0\x9F\x85\xB1 "]
   }
 
+  def print_results(sorted_winners, number_of_matches) do
+    IO.puts [IO.ANSI.clear]
+
+    IO.puts "\n\n"
+    IO.puts [IO.ANSI.yellow, "------- RESULTS -------"]
+    IO.puts "\n\n"
+    IO.puts [IO.ANSI.green, "After a total of #{number_of_matches} matches, here are the results:"]
+    IO.puts "\n\n"
+
+    winning_count =
+      Enum.at(sorted_winners, 0)
+      |> elem(1)
+
+    sorted_winners
+    |> Enum.with_index
+    |> Enum.each(fn
+         {{name, ^winning_count}, n} ->
+           IO.puts [IO.ANSI.red, "#{n + 1}: #{name} had #{winning_count} wins"]
+         {{name, wins}, n} ->
+           IO.puts [IO.ANSI.green, "#{n + 1}: #{name} had #{wins} wins"]
+        end)
+
+    IO.puts "\n\n\n"
+    IO.puts [IO.ANSI.reset]
+  end
+
   def print_winner(name, contender) do
     IO.puts [IO.ANSI.clear]
     IO.puts []
@@ -32,10 +58,14 @@ defmodule ConnectFour.Board do
   end
 
   def print_contenders(contender1, contender2) do
+    longest = Enum.max([String.length(contender1), String.length(contender2)])
+    rounded_half = round(longest / 2)
+    buffer = Enum.map(1..rounded_half - 1, fn _ -> " " end)
+
     IO.puts [IO.ANSI.clear]
     IO.puts [@contender_colors[1], contender1]
     IO.puts []
-    IO.puts [IO.ANSI.yellow, "     vs     "]
+    IO.puts [IO.ANSI.yellow, "#{buffer}vs"]
     IO.puts []
     IO.puts [@contender_colors[2], contender2]
     IO.puts []

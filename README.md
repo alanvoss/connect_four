@@ -16,7 +16,11 @@ will receive a prize of some sort (for those at the meetup for which this was pr
 * try it out (might improve interface at some point)
   * you must run this in bash shell within no muxer for the colors to work properly
 
-`> mix run -e 'ConnectFour.Controller.start_game(ConnectFour.Contenders.PureRandomness, ConnectFour.Contenders.PureRandomness)'`
+`> mix run -e 'ConnectFour.Controller.start_game([ConnectFour.Contenders.PureRandomness, ConnectFour.Contenders.PureRandomness])'`
+
+* to pit all contenders against each other
+
+`> mix run -e 'ConnectFour.Controller.start_battle'`
 
 * create a contender (`<project_root>/lib/connect_four/contenders`)
   * take a look at `PureRandomness` for some ideas
