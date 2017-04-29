@@ -1,8 +1,8 @@
 defmodule ConnectFour.Controller do
   alias ConnectFour.{Board, BoardHelper}
 
-  @pause_between_state_changes 10
-  @pause_between_frame_draws 10
+  @pause_between_state_changes 2000 
+  @pause_between_frame_draws 100
 
   def start_battle do
     {:ok, modules} = :application.get_key(:connect_four, :modules)
