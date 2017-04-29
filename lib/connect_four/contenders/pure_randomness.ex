@@ -1,8 +1,8 @@
 defmodule ConnectFour.Contenders.PureRandomness do
   use GenServer
 
-  def start_link(default) do
-    GenServer.start_link(__MODULE__, default)
+  def start(default) do
+    GenServer.start(__MODULE__, default)
   end
 
   def handle_call(:name, _from, state) do
@@ -11,6 +11,7 @@ defmodule ConnectFour.Contenders.PureRandomness do
       for i <- 1..12 do
         Enum.random(letters)
       end
+
     {:reply, List.to_string(random_name), state}
   end
 
