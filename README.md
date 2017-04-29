@@ -23,7 +23,7 @@ will receive a prize of some sort (for those at the meetup for which this was pr
   * it needs to be a `GenServer` that responds to:
     * `:name:` (return your team name)
     * `{:move, board}` `call`s (return the column from 0-6 that you would like to put your piece into)
-  * utilize the `BoardHelper` for several helper functions that should simplify some common tasks
+  * utilize the `BoardHelper` (and refer to the tests) for several functions that simplify some common tasks
     * board evaluation
     * board creation
     * piece at given coordinate
