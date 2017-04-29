@@ -1,7 +1,7 @@
 defmodule ConnectFour.Controller do
   alias ConnectFour.{Board, BoardHelper}
 
-  @pause_between_state_changes 2000 
+  @pause_between_state_changes 3000 
   @pause_between_frame_draws 100
 
   def start_battle do
