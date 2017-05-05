@@ -25,10 +25,18 @@ defmodule ConnectFour.Contenders.WesNJohnny do
   end
 
   def find_loser(board) do
+    any_winner(board, 2)
+  end
+
+  def find_winner(board) do
+    any_winner(board, 1)
+  end
+
+  def any_winner(board, contender) do
     [0,1,2,3,4,5,6]
       |> Enum.filter(fn(col) -> valid_move?(board, col) end)
       |> Enum.map(fn(col) ->
-          {_, new_board} = BoardHelper.drop(board, 2, col)
+          {_, new_board} = BoardHelper.drop(board, contender, col)
           # Logger.debug "#{inspect(new_board)}"
           result = BoardHelper.evaluate_board(new_board)
           # Logger.debug "#{inspect(result)}"
