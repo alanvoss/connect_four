@@ -7,7 +7,7 @@ defmodule ConnectFour.Contenders.PureRandomness do
 
   def handle_call(:name, _from, state) do
 
-    {:reply, "wes_and_johnny", state}
+    {:reply, "PureRandomness", state}
   end
 
   def handle_call({:move, board}, _from, state) do

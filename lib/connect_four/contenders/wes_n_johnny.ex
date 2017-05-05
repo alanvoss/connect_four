@@ -21,7 +21,21 @@ defmodule ConnectFour.Contenders.WesNJohnny do
       |> Enum.map(&(elem(&1, 1)))
       |> Enum.random
 
-    {:reply, random_column, state}
+    column = case find_winner(board) do
+      nil -> nil
+      x -> x
+    end
+
+    new_column = case column do
+      nil ->
+        case find_loser(board) do
+          nil -> random_column
+          x -> x
+        end
+      _ -> random_column
+    end
+
+    {:reply, new_column, state}
   end
 
   def find_loser(board) do
@@ -46,7 +60,6 @@ defmodule ConnectFour.Contenders.WesNJohnny do
           end
          end)
       |> Enum.find_index(fn(col) -> !is_nil(col) end)
-
 
   end
 
