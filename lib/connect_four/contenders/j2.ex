@@ -24,20 +24,27 @@ defmodule ConnectFour.Contenders.J2 do
 
   defp move(board, move_num) do
     case check_row_run(board, :left, 3) do
-      nil ->
-        case check_row_run(board, :left, 2) do
-          nil ->
-            case check_row_run(board, :left, 1) do
-              nil -> 
-                # TODO: switch to columns here
-                drop_random(board)
-              col -> col
-            end
-          col -> col
-        end
+      nil -> drop_random(board)
       col -> col
     end
+
+    # case check_row_run(board, :left, 3) do
+    #   nil ->
+    #     case check_row_run(board, :left, 2) do
+    #       nil ->
+    #         case check_row_run(board, :left, 1) do
+    #           nil -> 
+    #             # TODO: switch to columns here
+    #             drop_random(board)
+    #           col -> col
+    #         end
+    #       col -> col
+    #     end
+    #   col -> col
+    # end
   end
+
+  defp check_row_run(board, :left, 0), do: drop_random(board)
 
   defp check_row_run(board, :left, run_size) do
     result =
@@ -54,6 +61,40 @@ defmodule ConnectFour.Contenders.J2 do
             # drop it here
             # Helper.drop(board, column_index - 1)
             column_index - 1
+          _ -> nil
+        end
+      _ -> nil
+    end
+
+    case col do
+      # nil -> check_row_run(board, :right, run_size)
+      nil -> check_column_run(board, run_size)
+      _ -> col
+    end
+  end
+
+  defp check_column_run(board, run_size) do
+    rotated_board = 
+      board
+      |> Enum.with_index
+      |> Enum.reduce(Enum.map(1..7, fn _ -> [] end), fn {row, row_index}, acc ->
+           Enum.zip(acc, row)
+           |> Enum.map(fn {list, value} -> list ++ [value] end)
+         end)
+
+    result =
+      rotated_board
+      |> Enum.with_index
+      |> Enum.find_value(&(find_start_coordinate(&1, run_size)))
+
+    col = case result do
+      nil -> nil
+      {row_index, column_index} when row_index > 0 ->
+        case Helper.at_coordinate(rotated_board, {row_index - 1, column_index}) do
+          0 ->
+            # Drop it here
+            # row_index - 1
+            column_index
           _ -> nil
         end
       _ -> nil
@@ -85,7 +126,14 @@ defmodule ConnectFour.Contenders.J2 do
         end
       _ -> nil
     end
+
+    case col do
+      nil -> check_row_run(board, :left, run_size - 1)
+      _ -> col
+    end
   end
+
+
 
   defp drop_random(board) do
     random_column =
