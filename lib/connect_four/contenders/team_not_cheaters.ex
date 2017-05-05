@@ -15,12 +15,13 @@ defmodule ConnectFour.Contenders.TeamNotCheaters do
     they_win = check_if_they_can_win(board)
     random_move = random_move(board, state)
 
+
     cond do
         !state[:moved] -> 
                     state = Map.put(state, :moved, true)
                     {:reply, 4, state}
-        we_win -> {:reply, we_win, state}
-        they_win -> {:reply, they_win, state}               
+        we_win != 0 -> {:reply, we_win, state}
+        they_win != 0 -> {:reply, they_win, state}
         true -> random_move
     end
 
@@ -38,7 +39,9 @@ defmodule ConnectFour.Contenders.TeamNotCheaters do
         |> Enum.with_index
         |> Enum.filter(&(elem(&1, 0) == 0))
         |> Enum.map(&(elem(&1, 1)))
-        |> Enum.random 
+        |> Enum.filter(&BoardHelper.is_valid_coordinate?({&1, 0}))
+        |> Enum.random
+
         {:reply, random_column, state}
   end
 
