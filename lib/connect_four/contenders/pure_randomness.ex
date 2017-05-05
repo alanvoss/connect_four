@@ -6,8 +6,13 @@ defmodule ConnectFour.Contenders.PureRandomness do
   end
 
   def handle_call(:name, _from, state) do
+    letters = for n <- ?A..?Z, do: n
+    random_name =
+      for i <- 1..12 do
+        Enum.random(letters)
+      end
 
-    {:reply, "PureRandomness", state}
+    {:reply, List.to_string(random_name), state}
   end
 
   def handle_call({:move, board}, _from, state) do
