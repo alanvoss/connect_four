@@ -1,4 +1,4 @@
-defmodule ConnectFour.Contenders.PureRandomness do
+defmodule ConnectFour.Contenders.WesNJohnny do
   use GenServer
 
   def start(default) do
