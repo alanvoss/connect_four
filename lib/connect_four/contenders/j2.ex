@@ -23,37 +23,29 @@ defmodule ConnectFour.Contenders.J2 do
   end
 
   defp move(board, move_num) do
-    check_row_three(board, :left)
+    case check_row_run(board, :left, 3) do
+      nil ->
+        case check_row_run(board, :left, 2) do
+          nil ->
+            case check_row_run(board, :left, 1) do
+              nil -> 
+                # TODO: switch to columns here
+                drop_random(board)
+              col -> col
+            end
+          col -> col
+        end
+      col -> col
+    end
   end
 
-  # defp check_row_run(board, :left, run_size) do
-  #   result =
-  #     board
-  #     |> Enum.with_index
-  #     |> Enum.find_value(&(find_start_coordinate(&1, run_size)))
-
-  #   new_board = case result do
-  #     nil -> nil
-  #     {column_index, row_index} when column_index > 0 ->
-  #       # check the left side
-  #       case Helper.at_coordinate(board, {column_index - 1, row_index}) do
-  #         0 ->
-  #           # drop it here
-  #           # Helper.drop(board, column_index - 1)
-  #           column_index - 1
-  #         _ -> nil
-  #       end
-  #     _ -> nil
-  #   end
-  # end
-
-  defp check_row_three(board, :left) do
+  defp check_row_run(board, :left, run_size) do
     result =
       board
       |> Enum.with_index
-      |> Enum.find_value(&(find_start_coordinate(&1, 3)))
+      |> Enum.find_value(&(find_start_coordinate(&1, run_size)))
 
-    new_board = case result do
+    col = case result do
       nil -> nil
       {column_index, row_index} when column_index > 0 ->
         # check the left side
@@ -67,23 +59,23 @@ defmodule ConnectFour.Contenders.J2 do
       _ -> nil
     end
 
-    case new_board do
-      nil -> check_row_three(board, :right)
-      _ -> new_board
+    case col do
+      nil -> check_row_run(board, :right, run_size)
+      _ -> col
     end
   end
 
-  defp check_row_three(board, :right) do
+  defp check_row_run(board, :right, run_size) do
     result =
       board
       |> Enum.with_index
-      |> Enum.find_value(&(find_start_coordinate(&1, 3)))
+      |> Enum.find_value(&(find_start_coordinate(&1, run_size)))
 
-    new_board = case result do
+    col = case result do
       nil -> nil
-      {column_index, row_index} when column_index < 4 ->
+      {column_index, row_index} when column_index < 7 - run_size ->
         # check the left side
-        end_index = column_index + 2
+        end_index = column_index + run_size - 1
         case Helper.at_coordinate(board, {end_index + 1, row_index}) do
           0 ->
             # drop it here
@@ -92,11 +84,6 @@ defmodule ConnectFour.Contenders.J2 do
           _ -> nil
         end
       _ -> nil
-    end
-
-    case new_board do
-      nil -> drop_random(board)
-      _ -> new_board
     end
   end
 
