@@ -1,6 +1,6 @@
 defmodule BoardHelperTest do
   use ExUnit.Case
-  alias ConnectFour.BoardHelper
+  alias ConnectFourEngine.BoardHelper
 
   test "new returns a 7 x 6 board" do
     board = BoardHelper.new

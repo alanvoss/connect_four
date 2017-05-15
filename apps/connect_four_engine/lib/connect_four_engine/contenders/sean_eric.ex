@@ -1,6 +1,6 @@
-defmodule ConnectFour.Contenders.SeanEric do
+defmodule ConnectFourEngine.Contenders.SeanEric do
   use GenServer
-  import ConnectFour.BoardHelper
+  import ConnectFourEngine.BoardHelper
 
   def start(default) do
     GenServer.start(__MODULE__, default)

@@ -1,5 +1,5 @@
-defmodule ConnectFour.Board do
-  alias ConnectFour.BoardHelper
+defmodule ConnectFourEngine.Board do
+  alias ConnectFourEngine.BoardHelper
 
   @contender_colors %{
     1 => IO.ANSI.cyan,

@@ -1,15 +1,15 @@
-defmodule ConnectFour.Controller do
-  alias ConnectFour.{Board, BoardHelper}
+defmodule ConnectFourEngine.Controller do
+  alias ConnectFourEngine.{Board, BoardHelper}
 
   @pause_between_state_changes 3000 
   @pause_between_frame_draws 100
 
   def start_battle do
-    {:ok, modules} = :application.get_key(:connect_four, :modules)
+    {:ok, modules} = :application.get_key(:connect_four_engine, :modules)
 
     combos =
       modules
-      |> Enum.filter(&(String.starts_with?(Atom.to_string(&1), "Elixir.ConnectFour.Contenders")))
+      |> Enum.filter(&(String.starts_with?(Atom.to_string(&1), "Elixir.ConnectFourEngine.Contenders")))
       |> combinations(2)
 
     if length(combos) == 0 do
@@ -62,6 +62,13 @@ defmodule ConnectFour.Controller do
   defp loop(board, contenders = [opp1_pid, opp2_pid], contender) do
     Board.print(board)
 
+    ConnectFour.Web.Endpoint.broadcast("connect_four", "board", %{
+          board: board,
+          player1: player(1),
+          player2: player(2)
+      }
+    )
+
     contender_pid = Enum.at(contenders, contender - 1)
 
     column =
@@ -95,12 +102,25 @@ defmodule ConnectFour.Controller do
 
     case new_board do
       {:forfeit, contender} ->
+        ConnectFour.Web.Endpoint.broadcast("connect_four", "forfeit", %{
+              player: contender,
+              name: player(contender),
+              player1: player(1),
+              player2: player(2)
+                                           })
         {:forfeit, contender}
       new_board ->
         Board.print_drop(board, contender, column)
         :timer.sleep(@pause_between_frame_draws)
         Board.print(new_board)
         :timer.sleep(@pause_between_frame_draws)
+
+        ConnectFour.Web.Endpoint.broadcast("connect_four", "board", %{
+              board: new_board,
+              player1: player(1),
+              player2: player(2)
+          }
+        )
 
         case BoardHelper.evaluate_board(new_board) do
           {:winner, highlight_coords} ->
@@ -113,8 +133,18 @@ defmodule ConnectFour.Controller do
             :timer.sleep(@pause_between_state_changes)
             Board.print_winner(player(contender), contender)
             :timer.sleep(@pause_between_state_changes)
+            ConnectFour.Web.Endpoint.broadcast("connect_four", "winner", %{
+                  player: contender,
+                  name: player(contender),
+                  player1: player(1),
+                  player2: player(2)
+                                               })
             {:winner, contender}
           :tie ->
+            ConnectFour.Web.Endpoint.broadcast("connect_four", "tie", %{
+                  player1: player(1),
+                  player2: player(2)
+                                               })
             Board.print_tie(player(1), player(2))
             :timer.sleep(@pause_between_state_changes)
             :tie

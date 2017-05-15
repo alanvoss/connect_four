@@ -1,4 +1,4 @@
-defmodule ConnectFour.BoardHelper do
+defmodule ConnectFourEngine.BoardHelper do
   @moduledoc """
     Helpers for evaluating, creating, and appending to boards
   """

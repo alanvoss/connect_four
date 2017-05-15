@@ -1,20 +1,10 @@
-defmodule ConnectFour.Mixfile do
+defmodule ConnectFour.Umbrella.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :connect_four,
-     version: "0.1.0",
-     elixir: "~> 1.3",
-     build_embedded: Mix.env == :prod,
+    [apps_path: "apps",
      start_permanent: Mix.env == :prod,
      deps: deps()]
-  end
-
-  # Configuration for the OTP application
-  #
-  # Type "mix help compile.app" for more information
-  def application do
-    [applications: [:logger]]
   end
 
   # Dependencies can be Hex packages:
@@ -25,7 +15,10 @@ defmodule ConnectFour.Mixfile do
   #
   #   {:mydep, git: "https://github.com/elixir-lang/mydep.git", tag: "0.1.0"}
   #
-  # Type "mix help deps" for more examples and options
+  # Type "mix help deps" for more examples and options.
+  #
+  # Dependencies listed here are available only for this project
+  # and cannot be accessed from applications inside the apps folder
   defp deps do
     []
   end
