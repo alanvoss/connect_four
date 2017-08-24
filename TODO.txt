@@ -1,0 +1,5 @@
+# tests for all bots
+# better error handling for problems with bots
+# better library for helper functions (take a look at all submissions for common tasks)
+# specs for everything
+# better tournament style (maybe bigger font or something) - bracket generation?
