@@ -1,6 +1,7 @@
 defmodule ConnectFour.Controller do
   alias ConnectFour.{Board, BoardHelper}
 
+  @pause_after_genserver_crash 1000
   @pause_between_state_changes 3000 
   @pause_between_frame_draws 100
 
@@ -75,6 +76,7 @@ defmodule ConnectFour.Controller do
         })
       catch
         :exit, _ ->
+          :timer.sleep(@pause_after_genserver_crash)
           forfeit(contender, "Timeout or other Genserver error")
           {:forfeit, contender}
       end
@@ -125,7 +127,7 @@ defmodule ConnectFour.Controller do
   end
 
   defp forfeit(contender, reason) do
-    Board.print_forfeit(contender, reason)
+    Board.print_forfeit(contender, player(contender), reason)
     :timer.sleep(@pause_between_state_changes)
     winner = rem(contender, 2) + 1
     Board.print_winner(player(winner), winner)
