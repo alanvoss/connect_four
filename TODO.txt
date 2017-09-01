@@ -14,3 +14,4 @@
 # update README to include info about if tests don't pass, we will disqualify you
 # update README with docker instructions
 # organize prizes
+# stop the GenServers after competition is done.
