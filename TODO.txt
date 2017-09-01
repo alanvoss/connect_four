@@ -5,3 +5,8 @@
 #    hand off latest move from other side
 # specs for everything
 # better tournament style (maybe bigger font or something) - bracket generation?
+# CLI - or phoenix app
+# chess system
+# maybe a one at a time move advancer
+# keep a history
+# sandbox everything to prevent malicous code problems
