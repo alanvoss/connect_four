@@ -7,6 +7,7 @@ defmodule ConnectFour.Board do
   }
 
   @highlighter_color IO.ANSI.black()
+  @border_color IO.ANSI.yellow()
 
   @contender_characters %{
     0 => ["   "],
@@ -101,8 +102,9 @@ defmodule ConnectFour.Board do
 
   def print(board, clear \\ true, highlighted_coordinates \\ []) do
     if clear, do: IO.puts [IO.ANSI.clear]
+    IO.puts [@border_color, "+---------------------+"]
     Enum.map(0..5, fn row ->
-      IO.puts Enum.map(0..6, fn column ->
+      IO.puts [@border_color, "|"] ++ Enum.map(0..6, fn column ->
         coordinate = {column, row}
         contender = BoardHelper.at_coordinate(board, coordinate)
         if coordinate in highlighted_coordinates do
@@ -110,8 +112,9 @@ defmodule ConnectFour.Board do
         else
           @contender_characters[contender]
         end
-      end)
+      end) ++ [@border_color, "|"]
     end)
+    IO.puts [@border_color, "+---------------------+"]
     IO.puts [IO.ANSI.reset]
   end
 end
