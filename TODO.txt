@@ -10,3 +10,5 @@
 # maybe a one at a time move advancer
 # keep a history
 # sandbox everything to prevent malicous code problems
+# add a diff method
+# add history of column drops
