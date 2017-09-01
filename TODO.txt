@@ -12,3 +12,5 @@
 # sandbox everything to prevent malicous code problems
 # add a diff method
 # add history of column drops
+# break apart playing game and display (all at once) so easier to record
+# update README to include info about if tests don't pass, we will disqualify you
