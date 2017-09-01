@@ -1,5 +1,3 @@
-# tests for all bots
-# better error handling for problems with bots
 # better library for helper functions (take a look at all submissions for common tasks)
 #    diff function
 #    hand off latest move from other side
@@ -14,3 +12,4 @@
 # add history of column drops
 # break apart playing game and display (all at once) so easier to record
 # update README to include info about if tests don't pass, we will disqualify you
+# update README with docker instructions
