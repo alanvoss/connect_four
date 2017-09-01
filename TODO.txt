@@ -13,3 +13,4 @@
 # break apart playing game and display (all at once) so easier to record
 # update README to include info about if tests don't pass, we will disqualify you
 # update README with docker instructions
+# organize prizes
