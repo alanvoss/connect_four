@@ -2,11 +2,7 @@
 #    diff function
 #    hand off latest move from other side
 # specs for everything
-# CLI - or phoenix app - scripts
-# maybe a one at a time move advancer
 # add a diff method
-# break apart playing game and display (all at once) so easier to record
-# update README to include info about if tests don't pass, we will disqualify you
 # test to make sure there are no identical contender names as part of tests
 # update README with docker instructions
 # organize prizes
