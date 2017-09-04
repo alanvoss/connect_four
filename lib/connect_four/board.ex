@@ -8,6 +8,7 @@ defmodule ConnectFour.Board do
 
   @highlighter_color IO.ANSI.black()
   @border_color IO.ANSI.yellow()
+  @forfeit_reason_color IO.ANSI.yellow()
 
   @contender_characters %{
     0 => ["   "],
@@ -47,24 +48,29 @@ defmodule ConnectFour.Board do
     IO.puts [IO.ANSI.reset]
   end
 
-  def print_winner(name, contender) do
+  def print_winner(name, contender, comment) do
     IO.puts [IO.ANSI.clear]
     IO.puts []
     IO.puts []
     IO.puts [IO.ANSI.green, "And the winner is ..."]
     IO.puts []
-    IO.puts [@contender_colors[contender], name]
+    IO.puts [@contender_colors[contender + 1], name]
     IO.puts []
+
+    if comment != nil do
+      IO.puts [@forfeit_reason_color, comment]
+      IO.puts []
+    end
+
     IO.puts [IO.ANSI.reset]
   end
 
   def print_contenders(contender1, contender2) do
     IO.puts [IO.ANSI.clear]
-    IO.puts [@contender_colors[1], contender1]
     IO.puts []
-    IO.puts [IO.ANSI.yellow, "vs"]
     IO.puts []
-    IO.puts [@contender_colors[2], contender2]
+    IO.puts [@contender_colors[1], contender1, IO.ANSI.yellow, "  vs  ", @contender_colors[2], contender2]
+    IO.puts []
     IO.puts []
     IO.puts [IO.ANSI.reset]
   end
@@ -80,21 +86,10 @@ defmodule ConnectFour.Board do
     IO.puts [IO.ANSI.reset]
   end
 
-  def print_forfeit(contender, name, reason) do
-    IO.puts [IO.ANSI.clear]
-    IO.puts []
-    IO.puts []
-    IO.puts [IO.ANSI.green, "Due to #{reason}"]
-    IO.puts [IO.ANSI.green, "Player ", @contender_colors[contender], "#{name}", IO.ANSI.green, " has forfeited"]
-    IO.puts []
-    IO.puts []
-    IO.puts [IO.ANSI.reset]
-  end
-
   def print_drop(board, contender, column) do
     IO.puts [IO.ANSI.clear]
     IO.puts Enum.map(0..6, fn
-      ^column -> @contender_characters[contender]
+      ^column -> @contender_characters[contender + 1]
       n -> @contender_characters[0]
     end)
     print(board, false)
