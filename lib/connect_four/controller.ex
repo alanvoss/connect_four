@@ -1,10 +1,6 @@
 defmodule ConnectFour.Controller do
   alias ConnectFour.{Board, BoardHelper}
 
-  @pause_after_genserver_crash 500
-  @pause_between_state_changes 1000 
-  @pause_between_frame_draws 100
-
   def start_battle do
     {:ok, modules} = :application.get_key(:connect_four, :modules)
 
@@ -119,7 +115,7 @@ defmodule ConnectFour.Controller do
     name
   end
 
-   defp loop(board, [{{pid, name} = contender_info, contender}, _] = contenders, moves) do
+  defp loop(board, [{{pid, name} = contender_info, contender}, _] = contenders, moves) do
     column =
       try do
         case contender do
@@ -156,24 +152,6 @@ defmodule ConnectFour.Controller do
             loop(new_board, Enum.reverse(contenders), [column | moves])
         end
     end
-  end
-
-  defp forfeit(contender, reason) do
-    Board.print_forfeit(contender, player(contender), reason)
-    :timer.sleep(@pause_between_state_changes)
-    winner = rem(contender, 2) + 1
-    Board.print_winner(player(winner), winner)
-    :timer.sleep(@pause_between_state_changes)
-  end
-
-  # storing these in an Agent in case of GenServer contender crash
-  # where I wouldn't be able to retrieve the name to print the winner
-  # probably should just reimplement this as another GenServer
-  defp player(index, name) do
-    Agent.update(:contenders, fn m -> Map.put(m, index, name) end)
-  end
-  defp player(index) do
-    Agent.get(:contenders, fn m -> Map.get(m, index) end)
   end
 
   defp combinations(_, 0), do: [[]]
