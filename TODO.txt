@@ -2,16 +2,11 @@
 #    diff function
 #    hand off latest move from other side
 # specs for everything
-# better tournament style (maybe bigger font or something) - bracket generation?
-# CLI - or phoenix app
-# chess system
+# CLI - or phoenix app - scripts
 # maybe a one at a time move advancer
-# keep a history
-# sandbox everything to prevent malicous code problems
 # add a diff method
-# add history of column drops
 # break apart playing game and display (all at once) so easier to record
 # update README to include info about if tests don't pass, we will disqualify you
+# test to make sure there are no identical contender names as part of tests
 # update README with docker instructions
 # organize prizes
-# stop the GenServers after competition is done.
