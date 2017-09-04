@@ -49,3 +49,9 @@ will receive a prize of some sort (for those at the meetup for which this was pr
 
     `> mix run -e 'ConnectFour.Controller.start_battle'`
 
+## Results
+
+* results will be available for download in this folder:
+
+  http://bit.ly/2eWQOLf
+

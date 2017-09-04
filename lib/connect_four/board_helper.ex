@@ -57,7 +57,7 @@ defmodule ConnectFour.BoardHelper do
   end
 
   @doc """
-    Drop a piece of contender (1 or 2) into an existing board at the column and
+    Drop a piece of contender (0 or 1) into an existing board at the column and
     return a new board.
   """
   def drop(board, contender, column_index) do
