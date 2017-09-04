@@ -4,7 +4,7 @@ defmodule ConnectFour.Controller do
   @pause_between_state_changes 1500
   @pause_between_frame_draws 100
 
-  def display_games(dir, stepwise \\ false) do
+  def display_games(dir \\ "results", stepwise \\ false) do
     dir
     |> List.wrap()
     |> gather_games()
