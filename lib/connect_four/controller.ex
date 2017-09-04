@@ -21,9 +21,12 @@ defmodule ConnectFour.Controller do
 
     sorted_winners =
       combos
-      |> Enum.map(&start_game(&1))
+      |> Enum.map(fn contenders -> Task.async(fn -> {contenders, do_game(contenders)} end) end)
+      |> Enum.map(&(Task.await(&1)))
+      |> Enum.map(&(store_game(&1)))
+      |> Enum.map(&(&1.victors))
       |> List.flatten
-      |> Enum.reduce(%{}, fn {:winner, name}, acc ->
+      |> Enum.reduce(%{}, fn name, acc ->
            Map.update(acc, name, 1, &(&1 + 1))
          end)
       |> Enum.sort(&(elem(&1, 1) >= elem(&2, 1)))
@@ -31,97 +34,126 @@ defmodule ConnectFour.Controller do
     Board.print_results(sorted_winners, length(combos))
   end
 
-  def start_game([opponent1, opponent2]) do
-    Agent.start_link(fn -> %{1 => nil, 2 => nil} end, name: :contenders)
+  def store_game({contenders, result}) do
+    json = result |> Poison.encode!()
 
-    contenders = [opponent1, opponent2]
-    opp1 = Enum.random(contenders)
-    [opp2] = List.delete(contenders, opp1)
+    file_names =
+      contenders
+      |> Enum.map(&(Atom.to_string(&1)))
+      |> Enum.map(&(String.split(&1, ".") |> List.last))
 
-    {:ok, opp1_pid} = opp1.start(nil)
-    {:ok, opp2_pid} = opp2.start(nil)
+    File.cd!("results")
 
-    # TODO: also catch these and forfeit if :exit
-    player(1, GenServer.call(opp1_pid, :name))
-    player(2, GenServer.call(opp2_pid, :name))
+    file_names
+    |> Enum.map(&(File.mkdir(&1)))
 
-    # announcement
-    Board.print_contenders(player(1), player(2))
-    :timer.sleep(@pause_between_state_changes)
+    File.write(Enum.join([List.first(file_names), "#{List.last(file_names)}.json"], "/"), json)
 
-    new_board = BoardHelper.new()
-    case loop(new_board, [opp1_pid, opp2_pid], 1) do
-      {:winner, contender} ->
-        [{:winner, player(contender)}]
-      {:forfeit, contender} ->
-        [{:winner, player(rem(contender, 2) + 1)}]
-      :tie ->
-        [{:winner, player(1)}, {:winner, player(2)}]
-    end
+    File.cd!("..")
+
+    result
   end
 
-  defp loop(board, contenders = [opp1_pid, opp2_pid], contender) do
-    Board.print(board)
+  def do_game(contenders) do
+    contenders_info =
+      contenders
+      |> Enum.shuffle
+      |> Enum.map(fn module ->
+           {:ok, pid} = module.start(nil)
+           name = GenServer.call(pid, :name)
+           {pid, name}
+         end)
+      |> Enum.with_index
 
-    contender_pid = Enum.at(contenders, contender - 1)
+    new_board = BoardHelper.new()
 
+    names =
+      contenders_info
+      |> Enum.map(&(contender_name(&1)))
+
+    result = %{
+      contenders: names,
+      result: "win",
+      comment: ""
+    }
+
+    result =
+      case loop(new_board, contenders_info, []) do
+        {{:winner, contender_info}, moves} ->
+          Map.merge(result, %{
+            moves: moves,
+            victors: [elem(contender_info, 1)]
+          })
+        {{:forfeit, contender_info, reason}, moves} ->
+          loser = elem(contender_info, 1)
+          winner =
+            contenders_info
+            |> Enum.map(&(elem(&1, 0)))
+            |> List.delete(contender_info)
+            |> Enum.map(&(elem(&1, 1)))
+            |> List.first
+
+          Map.merge(result, %{
+            moves: moves,
+            victors: [winner],
+            comment: "#{loser} forfeited because: #{reason}"
+          })
+        {:tie, moves} ->
+          Map.merge(result, %{
+            result: "tie",
+            moves: moves,
+            victors: names
+          })
+      end
+
+    contenders_info
+    |> Enum.map(&(elem(&1, 0)))
+    |> Enum.map(&(elem(&1, 0)))
+    |> Enum.filter(&(Process.alive?(&1)))
+    |> Enum.each(&(GenServer.stop(&1)))
+
+    result
+  end
+
+  def contender_name({{_, name}, _}) do
+    name
+  end
+
+   defp loop(board, [{{pid, name} = contender_info, contender}, _] = contenders, moves) do
     column =
       try do
-        GenServer.call(contender_pid, {
-          :move,
-          case contender do
-            1 -> board
-            2 -> BoardHelper.flip(board)
-          end
-        })
+        case contender do
+          0 -> GenServer.call(pid, {:move, board})
+          1 -> GenServer.call(pid, {:move, BoardHelper.flip(board)})
+        end
       catch
-        :exit, _ ->
-          :timer.sleep(@pause_after_genserver_crash)
-          forfeit(contender, "Timeout or other Genserver error")
-          {:forfeit, contender}
+        :exit, _ -> {:forfeit, contender_info, "timeout or GenServer crash"}
       end
 
     new_board =
       case column do
-        {:forfeit, contender} ->
-          {:forfeit, contender}
+        {:forfeit, contender_info, reason} ->
+          {:forfeit, contender_info, reason}
         column ->
           case BoardHelper.drop(board, contender, column) do
             {:error, error} ->
-              forfeit(contender, error)
-              {:forfeit, contender}
+              {:forfeit, contender_info, "disallowed move"}
             {:ok, error_free_board} ->
               error_free_board
           end
       end
 
     case new_board do
-      {:forfeit, contender} ->
-        {:forfeit, contender}
+      {:forfeit, contender_info, reason} ->
+        {{:forfeit, contender_info, reason}, Enum.reverse(moves)}
       new_board ->
-        Board.print_drop(board, contender, column)
-        :timer.sleep(@pause_between_frame_draws)
-        Board.print(new_board)
-        :timer.sleep(@pause_between_frame_draws)
-
         case BoardHelper.evaluate_board(new_board) do
           {:winner, highlight_coords} ->
-            for i <- 1..5 do
-              :timer.sleep(@pause_between_frame_draws)
-              Board.print(new_board, true, highlight_coords)
-              :timer.sleep(@pause_between_frame_draws)
-              Board.print(new_board)
-            end
-            :timer.sleep(@pause_between_state_changes)
-            Board.print_winner(player(contender), contender)
-            :timer.sleep(@pause_between_state_changes)
-            {:winner, contender}
+            {{:winner, contender_info}, Enum.reverse([column | moves])}
           :tie ->
-            Board.print_tie(player(1), player(2))
-            :timer.sleep(@pause_between_state_changes)
-            :tie
+            {:tie, Enum.reverse([column | moves])}
           _ ->
-            loop(new_board, contenders, rem(contender, 2) + 1)
+            loop(new_board, Enum.reverse(contenders), [column | moves])
         end
     end
   end

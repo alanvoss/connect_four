@@ -67,7 +67,7 @@ defmodule ConnectFour.BoardHelper do
       {:ok,
         board
         |> Enum.reverse
-        |> drop(contender, column_index, false, [])
+        |> drop(contender + 1, column_index, false, [])
       }
     end
   end
