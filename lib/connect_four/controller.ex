@@ -111,7 +111,7 @@ defmodule ConnectFour.Controller do
     result
   end
 
-  def contender_name({{_, name}, _}) do
+  defp contender_name({{_, name}, _}) do
     name
   end
 
