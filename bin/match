@@ -1,0 +1,1 @@
+mix run -e "result = ConnectFour.Controller.do_game([ConnectFour.Contenders.$1, ConnectFour.Contenders.$2]); result |> ConnectFour.Controller.display_game(false); IO.inspect result"
