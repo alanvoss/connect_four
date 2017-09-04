@@ -156,7 +156,7 @@ defmodule ConnectFour.Controller do
 
   defp combinations(_, 0), do: [[]]
   defp combinations([], _), do: []
-  defp combinations(_deck = [x|xs], n) when is_integer(n) do
+  defp combinations([x|xs], n) when is_integer(n) do
     (for y <- combinations(xs, n - 1), do: [x|y]) ++ combinations(xs, n)
   end
 end
