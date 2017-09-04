@@ -30,7 +30,7 @@ defmodule ConnectFour.Controller do
       |> Enum.map(fn contenders -> Task.async(fn -> {contenders, do_game(contenders)} end) end)
       |> Enum.map(&(Task.await(&1)))
       |> Enum.map(&(store_game(&1)))
-      |> Enum.map(&(&1.victors))
+      |> Enum.map(&(&1["victors"]))
       |> List.flatten
       |> Enum.reduce(%{}, fn name, acc ->
            Map.update(acc, name, 1, &(&1 + 1))
@@ -58,17 +58,17 @@ defmodule ConnectFour.Controller do
       |> Enum.map(&(contender_name(&1)))
 
     result = %{
-      contenders: names,
-      result: "win",
-      comment: ""
+      "contenders" => names,
+      "result" => "win",
+      "comment" => ""
     }
 
     result =
       case loop(new_board, contenders_info, []) do
         {{:winner, contender_info}, moves} ->
           Map.merge(result, %{
-            moves: moves,
-            victors: [elem(contender_info, 1)]
+            "moves" =>  moves,
+            "victors" => [elem(contender_info, 1)]
           })
         {{:forfeit, contender_info, reason}, moves} ->
           loser = elem(contender_info, 1)
@@ -80,15 +80,15 @@ defmodule ConnectFour.Controller do
             |> List.first
 
           Map.merge(result, %{
-            moves: moves,
-            victors: [winner],
-            comment: "#{loser} forfeited because: #{reason}"
+            "moves" => moves,
+            "victors" => [winner],
+            "comment" => "#{loser} forfeited because: #{reason}"
           })
         {:tie, moves} ->
           Map.merge(result, %{
-            result: "tie",
-            moves: moves,
-            victors: names
+            "result" => "tie",
+            "moves" => moves,
+            "victors" => names
           })
       end
 
@@ -101,7 +101,7 @@ defmodule ConnectFour.Controller do
     result
   end
 
-  defp display_game(result, stepwise) do
+  def display_game(result, stepwise) do
     [player1, player2] = result["contenders"]
 
     # announcement screen
