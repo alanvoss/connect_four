@@ -48,7 +48,7 @@ that you can to play Connect Four.
   * if you make a disallowed move (a column that is already full or out of bounds), you also forfeit.
 * run tests again, just to be sure
   * `> mix test`
-* create a pull request against the original repo
+* create a pull request against the original repo's `elixirconf2017` branch
   * https://github.com/alanvoss/connect_four
 * we'll run a tournament with all the contenders to find the ultimate winner.
   * run yourself to get a log of games played
