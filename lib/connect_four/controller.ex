@@ -135,14 +135,14 @@ defmodule ConnectFour.Controller do
         :timer.sleep(@pause_between_state_changes)
 
         [victor] = result["victors"]
-        winner_index =
+        contender =
           result["contenders"]
-          |> Enum.with_index
+          |> Enum.with_index(1)
           |> Enum.filter(&(elem(&1, 0) == victor))
           |> Enum.map(&(elem(&1, 1)))
           |> List.first
 
-        Board.print_winner(victor, winner_index, result["comment"])
+        Board.print_winner(victor, contender, result["comment"])
       "tie" ->
         Board.print_tie(player1, player2)
     end
