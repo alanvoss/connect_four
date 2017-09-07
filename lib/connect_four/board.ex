@@ -90,7 +90,7 @@ defmodule ConnectFour.Board do
     IO.puts [IO.ANSI.clear]
     IO.puts Enum.map(0..6, fn
       ^column -> @contender_characters[contender]
-      n -> @contender_characters[0]
+      _ -> @contender_characters[0]
     end)
     print(board, false)
   end
