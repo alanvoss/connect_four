@@ -49,7 +49,7 @@ defmodule ConnectFour.Controller do
            name = GenServer.call(pid, :name)
            {pid, name}
          end)
-      |> Enum.with_index
+      |> Enum.with_index(1)
 
     new_board = BoardHelper.new()
 
@@ -111,13 +111,13 @@ defmodule ConnectFour.Controller do
     # the action
     {winning_board, _} =
       result["moves"]
-      |> Enum.reduce({BoardHelper.new(), 0}, fn column, {board, contender} ->
-           Board.print_drop(board, contender + 1, column)
+      |> Enum.reduce({BoardHelper.new(), 1}, fn column, {board, contender} ->
+           Board.print_drop(board, contender, column)
            if !stepwise, do: :timer.sleep(@pause_between_frame_draws)
-           {:ok, new_board} = BoardHelper.drop(board, contender + 1, column)
+           {:ok, new_board} = BoardHelper.drop(board, contender, column)
            Board.print(new_board)
            if stepwise, do: IO.getn(:stdio, "hit any key", 1), else: :timer.sleep(@pause_between_frame_draws)
-           {new_board, rem(contender + 1, 2)}
+           {new_board, rem(contender, 2) + 1}
          end)
 
     # the winner announcement
@@ -201,8 +201,8 @@ defmodule ConnectFour.Controller do
     column =
       try do
         case contender do
-          0 -> GenServer.call(pid, {:move, board})
-          1 -> GenServer.call(pid, {:move, BoardHelper.flip(board)})
+          1 -> GenServer.call(pid, {:move, board})
+          2 -> GenServer.call(pid, {:move, BoardHelper.flip(board)})
         end
       catch
         :exit, _ -> {:forfeit, contender_info, "timeout or GenServer crash"}
@@ -213,7 +213,7 @@ defmodule ConnectFour.Controller do
         {:forfeit, contender_info, reason} ->
           {:forfeit, contender_info, reason}
         column ->
-          case BoardHelper.drop(board, contender + 1, column) do
+          case BoardHelper.drop(board, contender, column) do
             {:error, _} ->
               {:forfeit, contender_info, "disallowed move"}
             {:ok, error_free_board} ->

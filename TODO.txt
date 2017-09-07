@@ -1,8 +1,3 @@
-# better library for helper functions (take a look at all submissions for common tasks)
-#    diff function
-#    hand off latest move from other side
-# specs for everything
-# add a diff method
-# test to make sure there are no identical contender names as part of tests
-# update README with docker instructions
-# organize prizes
+# docker instructions
+# winning coords in json -- and utilize them in display
+# refactoring of diagonal coords

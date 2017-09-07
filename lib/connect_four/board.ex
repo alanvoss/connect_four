@@ -54,7 +54,7 @@ defmodule ConnectFour.Board do
     IO.puts []
     IO.puts [IO.ANSI.green, "And the winner is ..."]
     IO.puts []
-    IO.puts [@contender_colors[contender + 1], name]
+    IO.puts [@contender_colors[contender], name]
     IO.puts []
 
     if comment != nil do
@@ -89,7 +89,7 @@ defmodule ConnectFour.Board do
   def print_drop(board, contender, column) do
     IO.puts [IO.ANSI.clear]
     IO.puts Enum.map(0..6, fn
-      ^column -> @contender_characters[contender + 1]
+      ^column -> @contender_characters[contender]
       n -> @contender_characters[0]
     end)
     print(board, false)
