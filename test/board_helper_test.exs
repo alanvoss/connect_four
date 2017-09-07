@@ -1,5 +1,6 @@
 defmodule BoardHelperTest do
   use ExUnit.Case
+  doctest ConnectFour.BoardHelper
   alias ConnectFour.BoardHelper
 
   test "new returns a 7 x 6 board" do
@@ -31,7 +32,7 @@ defmodule BoardHelperTest do
 
   describe "drop" do
     test "valid drop" do
-      assert BoardHelper.drop(@board, 0, 2) == {:ok, [
+      assert BoardHelper.drop(@board, 1, 2) == {:ok, [
         [0, 1, 0, 0, 1, 2, 1],
         [1, 2, 0, 0, 2, 1, 2],
         [2, 1, 1, 2, 1, 2, 2],
@@ -47,8 +48,7 @@ defmodule BoardHelperTest do
   end
 
   describe "get_diagonal_coordinates" do
-    board = BoardHelper.new
-    assert BoardHelper.get_diagonal_coordinates(board) == [
+    assert BoardHelper.get_diagonal_coordinates() == [
       [{0,3},{1,2},{2,1},{3,0}],
       [{0,4},{1,3},{2,2},{3,1},{4,0}],
       [{0,5},{1,4},{2,3},{3,2},{4,1},{5,0}],

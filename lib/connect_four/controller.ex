@@ -112,9 +112,9 @@ defmodule ConnectFour.Controller do
     {winning_board, _} =
       result["moves"]
       |> Enum.reduce({BoardHelper.new(), 0}, fn column, {board, contender} ->
-           Board.print_drop(board, contender, column)
+           Board.print_drop(board, contender + 1, column)
            if !stepwise, do: :timer.sleep(@pause_between_frame_draws)
-           {:ok, new_board} = BoardHelper.drop(board, contender, column)
+           {:ok, new_board} = BoardHelper.drop(board, contender + 1, column)
            Board.print(new_board)
            if stepwise, do: IO.getn(:stdio, "hit any key", 1), else: :timer.sleep(@pause_between_frame_draws)
            {new_board, rem(contender + 1, 2)}
@@ -213,7 +213,7 @@ defmodule ConnectFour.Controller do
         {:forfeit, contender_info, reason} ->
           {:forfeit, contender_info, reason}
         column ->
-          case BoardHelper.drop(board, contender, column) do
+          case BoardHelper.drop(board, contender + 1, column) do
             {:error, _} ->
               {:forfeit, contender_info, "disallowed move"}
             {:ok, error_free_board} ->
