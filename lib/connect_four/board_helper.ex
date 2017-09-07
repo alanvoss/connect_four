@@ -30,10 +30,7 @@ defmodule ConnectFour.BoardHelper do
   @doc """
   Finds the value at a given coordinate (0 indexed)
 
-  Returns one of:
-    0 - no piece
-    1 - contender 1
-    2 - contender 2
+  Returns one of: 0 (no piece), 1 (contender 1), 2 (contender 2)
 
   ## Examples
 
@@ -57,9 +54,7 @@ defmodule ConnectFour.BoardHelper do
   Determines whether a coordinate falls within the bounds of the board.  Coordinates are from
   {0,0} in the upper left corner to {6, 5} in the lower right.
 
-  Returns one of (boolean):
-    true
-    false
+  Returns one of (boolean): true, false
 
   ## Examples
 
@@ -99,7 +94,7 @@ defmodule ConnectFour.BoardHelper do
              [0, 2, 2, 1, 1, 0, 0]]}
 
   """
-  def drop(board, contender, column_index) do
+  def drop(board, contender, column_index) when contender in [1,2] do
     if Enum.at(board, 0) |> Enum.at(column_index) !== 0 do
       {:error, "non-allowed move"}
     else
@@ -114,10 +109,7 @@ defmodule ConnectFour.BoardHelper do
   @doc """
   Evaluate a board for winners, ties, or no winner yet.
 
-  Returns one of:
-    {:winner, winning_coordinates}
-    :tie
-    nil (no winner yet)
+  Returns one of: {:winner, winning_coordinates}, :tie, nil (no winner yet)
 
   ## Examples
 
@@ -150,9 +142,7 @@ defmodule ConnectFour.BoardHelper do
   @doc """
   Evaluate a board for winners horizontally.
 
-  Returns one of:
-    {:winner, winning_coordinates}
-    nil
+  Returns one of: {:winner, winning_coordinates}, nil
 
   ## Examples
 
@@ -192,9 +182,7 @@ defmodule ConnectFour.BoardHelper do
   @doc """
   Evaluate a board for winners vertically.
 
-  Returns one of:
-    {:winner, winning_coordinates}
-    nil
+  Returns one of: {:winner, winning_coordinates}, nil
 
   ## Examples
 
@@ -242,9 +230,7 @@ defmodule ConnectFour.BoardHelper do
   @doc """
   Evaluate a board for winners diagonally.
 
-  Returns one of:
-    {:winner, winning_coordinates}
-    nil
+  Returns one of: {:winner, winning_coordinates}, nil
 
   ## Examples
 
@@ -291,9 +277,7 @@ defmodule ConnectFour.BoardHelper do
   @doc """
   Evaluate a board for ties.
 
-  Returns one of:
-    :tie
-    nil
+  Returns one of: :tie, nil
 
   ## Examples
 
