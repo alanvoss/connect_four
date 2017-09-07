@@ -7,6 +7,8 @@ defmodule ConnectFour.Board do
   }
 
   @highlighter_color IO.ANSI.black()
+  @border_color IO.ANSI.yellow()
+  @forfeit_reason_color IO.ANSI.yellow()
 
   @contender_characters %{
     0 => ["   "],
@@ -46,7 +48,7 @@ defmodule ConnectFour.Board do
     IO.puts [IO.ANSI.reset]
   end
 
-  def print_winner(name, contender) do
+  def print_winner(name, contender, comment) do
     IO.puts [IO.ANSI.clear]
     IO.puts []
     IO.puts []
@@ -54,20 +56,21 @@ defmodule ConnectFour.Board do
     IO.puts []
     IO.puts [@contender_colors[contender], name]
     IO.puts []
+
+    if comment != nil do
+      IO.puts [@forfeit_reason_color, comment]
+      IO.puts []
+    end
+
     IO.puts [IO.ANSI.reset]
   end
 
   def print_contenders(contender1, contender2) do
-    longest = Enum.max([String.length(contender1), String.length(contender2)])
-    rounded_half = round(longest / 2)
-    buffer = Enum.map(1..rounded_half - 1, fn _ -> " " end)
-
     IO.puts [IO.ANSI.clear]
-    IO.puts [@contender_colors[1], contender1]
     IO.puts []
-    IO.puts [IO.ANSI.yellow, "#{buffer}vs"]
     IO.puts []
-    IO.puts [@contender_colors[2], contender2]
+    IO.puts [@contender_colors[1], contender1, IO.ANSI.yellow, "  vs  ", @contender_colors[2], contender2]
+    IO.puts []
     IO.puts []
     IO.puts [IO.ANSI.reset]
   end
@@ -83,30 +86,20 @@ defmodule ConnectFour.Board do
     IO.puts [IO.ANSI.reset]
   end
 
-  def print_forfeit(contender, reason) do
-    IO.puts [IO.ANSI.clear]
-    IO.puts []
-    IO.puts []
-    IO.puts [IO.ANSI.green, "Due to #{reason}"]
-    IO.puts [IO.ANSI.green, "Player ", @contender_colors[contender], "#{contender}", IO.ANSI.green, " has forfeited"]
-    IO.puts []
-    IO.puts []
-    IO.puts [IO.ANSI.reset]
-  end
-
   def print_drop(board, contender, column) do
     IO.puts [IO.ANSI.clear]
     IO.puts Enum.map(0..6, fn
       ^column -> @contender_characters[contender]
-      n -> @contender_characters[0]
+      _ -> @contender_characters[0]
     end)
     print(board, false)
   end
 
   def print(board, clear \\ true, highlighted_coordinates \\ []) do
     if clear, do: IO.puts [IO.ANSI.clear]
+    IO.puts [@border_color, "+---------------------+"]
     Enum.map(0..5, fn row ->
-      IO.puts Enum.map(0..6, fn column ->
+      IO.puts [@border_color, "|"] ++ Enum.map(0..6, fn column ->
         coordinate = {column, row}
         contender = BoardHelper.at_coordinate(board, coordinate)
         if coordinate in highlighted_coordinates do
@@ -114,8 +107,9 @@ defmodule ConnectFour.Board do
         else
           @contender_characters[contender]
         end
-      end)
+      end) ++ [@border_color, "|"]
     end)
+    IO.puts [@border_color, "+---------------------+"]
     IO.puts [IO.ANSI.reset]
   end
 end
