@@ -1,3 +1,0 @@
-# docker instructions
-# winning coords in json -- and utilize them in display
-# refactoring of diagonal coords
