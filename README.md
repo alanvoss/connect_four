@@ -32,7 +32,7 @@ that you can to play Connect Four.
     * `> mix test`
     * if tests fail against your repo, you will be disqualified
   * test your bot against `PureRandomness`.  if you can't beat it 100% of the time...
-    * `> bin/match PureRandomness YourBotName`
+    * `> bin/match PureRandomness YourBotModuleName`
     * the result map for the match will be displayed immediately following the winner announcement
       * this should help you with troubleshooting
       * you can visualize this result by:
