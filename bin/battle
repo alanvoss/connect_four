@@ -1,1 +1,1 @@
-mix run -e 'ConnectFour.Controller.start_battle'
+mix run -e 'ConnectFour.Controller.start_battle()'
