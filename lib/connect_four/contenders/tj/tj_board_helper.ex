@@ -1,4 +1,4 @@
-defmodule ConnectFour.BoardHelper do
+defmodule ConnectFour.Contenders.TJ.BoardHelper do
   @moduledoc """
     Helpers for evaluating, creating, and appending to boards
   """
@@ -129,10 +129,10 @@ defmodule ConnectFour.BoardHelper do
       {:winner, [{4, 5}, {3, 4}, {2, 3}, {1, 2}]}
 
   """
-  def evaluate_board(board) do
-    evaluate_rows(board) ||
-      evaluate_columns(board) ||
-      evaluate_diagonals(board) ||
+  def evaluate_board(board, evaluator \\ &find_start_coordinate/1) do
+    evaluate_rows(board, evaluator) ||
+      evaluate_columns(board, evaluator) ||
+      evaluate_diagonals(board, evaluator) ||
       evaluate_tie(board)
   end
 
@@ -162,11 +162,11 @@ defmodule ConnectFour.BoardHelper do
       {:winner, [{3, 5}, {4, 5}, {5, 5}, {6, 5}]}
 
   """
-  def evaluate_rows(board) do
+  def evaluate_rows(board, evaluator \\ &find_start_coordinate/1) do
     result =
       board
       |> Enum.with_index
-      |> Enum.find_value(&find_start_coordinate/1)
+      |> Enum.find_value(evaluator)
 
     case result do
       nil -> nil
@@ -202,7 +202,7 @@ defmodule ConnectFour.BoardHelper do
       {:winner, [{1, 2}, {1, 3}, {1, 4}, {1, 5}]}
 
   """
-  def evaluate_columns(board) do
+  def evaluate_columns(board, evaluator \\ &find_start_coordinate/1) do
     rotated_board =
       board
       |> Enum.with_index
@@ -214,7 +214,7 @@ defmodule ConnectFour.BoardHelper do
     result =
       rotated_board
       |> Enum.with_index
-      |> Enum.find_value(&find_start_coordinate/1)
+      |> Enum.find_value(evaluator)
 
     case result do
       nil -> nil
@@ -250,14 +250,14 @@ defmodule ConnectFour.BoardHelper do
       {:winner, [{4, 5}, {3, 4}, {2, 3}, {1, 2}]}
 
   """
-  def evaluate_diagonals(board) do
+  def evaluate_diagonals(board, evaluator \\ &find_start_coordinate/1) do
     coordinates = get_diagonal_coordinates()
 
     result =
       coordinates
       |> Enum.map(fn set -> Enum.map(set, &(at_coordinate(board, &1))) end)
       |> Enum.with_index
-      |> Enum.find_value(&find_start_coordinate/1)
+      |> Enum.find_value(evaluator)
 
     case result do
       nil -> nil
@@ -386,21 +386,47 @@ defmodule ConnectFour.BoardHelper do
   end
 
   # Find a place in a list of values where a string of 4 identical non-0s occurs.
-  defp find_start_coordinate({row, row_index}) do
+  def find_start_coordinate({row, row_index}) do
     find_start_coordinate(row, {0, row_index}, nil, 0, 0)
   end
-  defp find_start_coordinate(_, {column_index, row_index}, _, _, 4) do
+  def find_start_coordinate(_, {column_index, row_index}, _, _, 4) do
     {column_index, row_index}
   end
-  defp find_start_coordinate([], _, _, _, _), do: false
-  defp find_start_coordinate([first | rest], {column_index, row_index}, char, index, count) when first == char do
+  def find_start_coordinate([], _, _, _, _), do: false
+  def find_start_coordinate([first | rest], {column_index, row_index}, char, index, count) when first == char do
     find_start_coordinate(rest, {column_index, row_index}, char, index + 1, count + 1)
   end
-  defp find_start_coordinate([0 | rest], {_column_index, row_index}, _, index, _count) do
+  def find_start_coordinate([0 | rest], {_column_index, row_index}, _, index, _count) do
     find_start_coordinate(rest, {index, row_index}, nil, index + 1, 1)
   end
-  defp find_start_coordinate([first | rest], {_column_index, row_index}, _, index, _count) do
+  def find_start_coordinate([first | rest], {_column_index, row_index}, _, index, _count) do
     find_start_coordinate(rest, {index, row_index}, first, index + 1, 1)
+  end
+
+  def reverse_coordinate({column_index, row_index}, row) do
+    {length(row) - column_index - 1, row_index}
+  end
+  def reverse_coordinate(_, _row), do: false
+
+  # Find a place in a list of values where a string of 3 identical non-0s is either preceded or
+  # followed by a 0.
+  def find_threat({row, row_index}) do
+    find_threat(row, {0, row_index}, nil, 0, 0)
+    ||
+    find_threat(Enum.reverse(row), {0, row_index}, nil, 0, 0) |> reverse_coordinate(row)
+  end
+  def find_threat([0 | _rest], {_column_index, row_index}, _, index, 3) do
+    {index, row_index}
+  end
+  def find_threat([], _, _, _, _), do: false
+  def find_threat([first | rest], {column_index, row_index}, char, index, count) when first == char do
+    find_threat(rest, {column_index, row_index}, char, index + 1, count + 1)
+  end
+  def find_threat([0 | rest], {_column_index, row_index}, _, index, _count) do
+    find_threat(rest, {index, row_index}, nil, index + 1, 1)
+  end
+  def find_threat([first | rest], {_column_index, row_index}, _, index, _count) do
+    find_threat(rest, {index, row_index}, first, index + 1, 1)
   end
 
   # Perform the mutation of dropping a piece onto the board.
