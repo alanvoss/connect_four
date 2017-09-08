@@ -1,6 +1,8 @@
 defmodule ConnectFour.Contenders.TJ do
   use GenServer
 
+  import ConnectFour.Contenders.TJ.BoardHelper
+
   def start(default) do
     GenServer.start(__MODULE__, default)
   end
@@ -24,6 +26,8 @@ defmodule ConnectFour.Contenders.TJ do
       |> Enum.map(&(elem(&1, 1)))
       |> Enum.random
 
-    {:reply, random_column, state}
+    # somehow use find_threat? :(
+
+    #{:reply, random_column, state}
   end
 end
