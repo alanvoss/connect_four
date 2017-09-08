@@ -21,7 +21,7 @@ defmodule ConnectFour.Contenders.Tielur do
     {:reply, 3, state}
   end
 
-    def handle_call({:move, board}, _from, state) do
+  def handle_call({:move, board}, _from, state) do
     random_column =
       board
       |> Enum.at(0)
