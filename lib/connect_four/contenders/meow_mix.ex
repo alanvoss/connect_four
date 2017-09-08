@@ -35,9 +35,6 @@ defmodule ConnectFour.Contenders.MeowMix do
     |> Enum.map(fn({n, b}) -> {n, BoardHelper.evaluate_board(b)} end)
     |> Enum.filter(fn({_n, b}) -> match?({:winner, _}, b) end)
 
-    IO.inspect(winner)
-    {:nowinner}
-
     case winner do
       [{n, _}] ->
         {:winner, n}
