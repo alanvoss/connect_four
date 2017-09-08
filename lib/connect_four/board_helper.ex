@@ -66,10 +66,7 @@ defmodule ConnectFour.BoardHelper do
 
   """
   def is_valid_coordinate?({column_index, row_index}) do
-    row_index >= 0 &&
-      row_index <= 5 &&
-      column_index >= 0 &&
-      column_index <= 6
+    row_index in 0..5 && column_index in 0..6
   end
 
   @doc """
