@@ -9,7 +9,7 @@ defmodule ConnectFour.Contenders.MeowMix do
     {:reply, "MeowMix9000", state}
   end
 
-  def handle_call({:move, board}, _from, state) do
+  def handle_call({:move, board}, _from, previous_board) do
     random_column =
       board
       |> Enum.at(0)
@@ -18,6 +18,6 @@ defmodule ConnectFour.Contenders.MeowMix do
       |> Enum.map(&(elem(&1, 1)))
       |> Enum.random
 
-    {:reply, random_column, state}
+    {:reply, random_column, board}
   end
 end
