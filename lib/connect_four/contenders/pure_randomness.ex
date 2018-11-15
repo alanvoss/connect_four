@@ -8,7 +8,7 @@ defmodule ConnectFour.Contenders.PureRandomness do
   def handle_call(:name, _from, state) do
     letters = for n <- ?A..?Z, do: n
     random_name =
-      for _ <- 1..12 do
+      for i <- 1..12 do
         Enum.random(letters)
       end
 

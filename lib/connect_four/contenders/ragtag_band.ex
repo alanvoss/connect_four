@@ -11,38 +11,33 @@ defmodule ConnectFour.Contenders.RagtagBand do
   end
 
   def handle_call({:move, board}, _from, state) do
-    chosen_column = choose_next_move(board)
-    {:reply, chosen_column, state}
+    random_column =
+      board
+      |> available_columns
+      |> Enum.random
+
+    # 
+
+
+    {:reply, random_column, state}
   end
 
   def choose_next_move(board) do
     columns = board |> available_columns
-    x = case Enum.find(columns, fn(col) -> winning_move?(board, 1, col) end) do
+    x = case Enum.find(columns, &(winning_move?(board, 1, &1))) do
+      # if opponent is about to win, block
       nil ->
-        moves = blocking_moves(columns, board)
-        if Enum.any?(moves) do
-          choose_any_of(moves)
-        else
-          choose_any_of(columns)
-        end
+        columns
+        |> Enum.map(&(BoardHelper.drop(board, 1, &1)))
+        |> hands_over_victory?
+        |> Enum.reduce(columns, fn column, acc ->
+             List.delete(acc, column)
+           end)
+        |> List.wrap
+        |> Enum.random
       column -> column
     end
     x || Enum.at(columns, 0)
-  end
-
-  def blocking_moves(avail, board) do
-    Enum.map(avail, fn(col) ->
-      {:ok, new_board} = BoardHelper.drop(board, 1, col)
-      if hands_over_victory?(new_board) do
-        col
-      end
-    end)
-  end
-
-  def choose_any_of(cols) do
-    cols
-    |> List.wrap
-    |> Enum.random
   end
 
   def hands_over_victory?(board) do
@@ -53,8 +48,7 @@ defmodule ConnectFour.Contenders.RagtagBand do
 
   def winning_move?(board, contender, column_index) do
     # 3 in a row, either player
-    {:ok, new_board} = BoardHelper.drop(board, contender, column_index)
-    new_board
+    BoardHelper.drop(board, contender, column_index)
     |> BoardHelper.evaluate_board
   end
 
